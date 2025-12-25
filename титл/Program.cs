@@ -1,50 +1,68 @@
-// вариант 26 базовый вывести сведения о товарах у которых истекает срок годности через 2 дня
-Console.Write("Введите количество товаров: ");
-int n = int.Parse(Console.ReadLine());
-Product[] products = new Product[n];
-for (int i = 0; i < products.Length; i++)
+// Вариант 26 средний уровень. Вывод товаров с истекающим сроком годности через двое суток.
+try
 {
-    Console.WriteLine($"\nТовар №{i + 1}:");
-
-    Console.Write("Наименование: ");
-    products[i].Name = Console.ReadLine();
-
-    Console.Write("Цена: ");
-    products[i].Price = decimal.Parse(Console.ReadLine());
-
-    Console.Write("Дата производства (дд.ММ.гггг): ");
-    products[i].ProdDate = DateTime.Parse(Console.ReadLine());
-
-    Console.Write("Срок годности (в днях): ");
-    products[i].ShelfLifeDays = int.Parse(Console.ReadLine());
-
-    Console.Write("Количество: ");
-    products[i].Quantity = int.Parse(Console.ReadLine());
-
-    Console.Write("Производитель: ");
-    products[i].Manufacturer = Console.ReadLine();
+    Console.Write("Введите количество товаров: ");
+    int n = int.Parse(Console.ReadLine());
+    Product[] products = new Product[n];
+    
+    for (int i = 0; i < products.Length; i++)
+    {
+        Console.WriteLine($"Введите данные о {i + 1} товаре:");
+        Console.Write("Наименование: ");
+        products[i].name = Console.ReadLine();
+        Console.Write("Цена: ");
+        products[i].price = decimal.Parse(Console.ReadLine());
+        Console.Write("Дата производства (дд.мм.гггг): ");
+        products[i].productionDate = DateTime.Parse(Console.ReadLine());
+        Console.Write("Срок годности (дней): ");
+        products[i].shelfLife = int.Parse(Console.ReadLine());
+        Console.Write("Количество: ");
+        products[i].count = int.Parse(Console.ReadLine());
+        Console.Write("Производитель: ");
+        products[i].manufacturer = Console.ReadLine();
+    }
+    
+    DateTime currentDate = DateTime.Today;
+    DateTime expirationDate = currentDate.AddDays(2);
+    
+    Console.WriteLine("\nТовары, срок годности которых истекает через двое суток:");
+    bool found = false;
+    
+    foreach (Product product in products)
+    {
+        DateTime productExpiration = product.productionDate.AddDays(product.shelfLife);
+        
+        if (productExpiration.Date == expirationDate.Date)
+        {
+            product.Print();
+            found = true;
+        }
+    }
+    
+    if (!found)
+    {
+        Console.WriteLine("Таких товаров нет.");
+    }
 }
-DateTime targetDate = DateTime.Today.AddDays(2);
-Console.WriteLine("\nТовары, срок годности которых истекает через двое суток:");
-foreach (var p in products)
+catch (Exception ex)
 {
-    if (p.ExpireDate.Date == targetDate)
-        p.Print();
+    Console.WriteLine(ex.Message);
 }
-Console.WriteLine("\nНажмите Enter для выхода...");
-Console.ReadLine();
+
 struct Product
 {
-    public string Name;       
-    public decimal Price;        
-    public DateTime ProdDate; 
-    public int ShelfLifeDays;   
-    public int Quantity;        
-    public string Manufacturer;  
-    public DateTime ExpireDate => ProdDate.AddDays(ShelfLifeDays);
+    public string name;
+    public decimal price;
+    public DateTime productionDate;
+    public int shelfLife;
+    public int count;
+    public string manufacturer;
+    
     public void Print()
     {
-        Console.WriteLine($"{Name}, {Price}, {ProdDate:d}, " +
-                          $"{ShelfLifeDays} дн., {Quantity}, {Manufacturer}");
+        DateTime expirationDate = productionDate.AddDays(shelfLife);
+        Console.WriteLine($"{name}, Цена: {price}, Дата производства: {productionDate:dd.MM.yyyy}, " +
+                         $"Срок годности: {shelfLife} дней, Количество: {count}, Производитель: {manufacturer}, " +
+                         $"Дата истечения: {expirationDate:dd.MM.yyyy}");
     }
 }
