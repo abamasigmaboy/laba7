@@ -1,4 +1,5 @@
-﻿Console.Write("Введите количество товаров: ");
+// вариант 26 базовый вывести сведения о товарах у которых истекает срок годности через 2 дня
+Console.Write("Введите количество товаров: ");
 int n = int.Parse(Console.ReadLine());
 Product[] products = new Product[n];
 for (int i = 0; i < products.Length; i++)
